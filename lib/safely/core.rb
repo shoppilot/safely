@@ -7,8 +7,8 @@ module Safely
     attr_accessor :raise_envs, :tag, :report_exception_method, :throttle_counter
     attr_writer :env
 
-    def report_exception(e)
-      report_exception_method.call(e)
+    def report_exception(e, options = {})
+      report_exception_method.call(e, options)
     end
 
     def env
@@ -23,10 +23,10 @@ module Safely
     end
   end
 
-  DEFAULT_EXCEPTION_METHOD = proc do |e|
+  DEFAULT_EXCEPTION_METHOD = proc do |e, options|
     e = e.dup # leave original exception unmodified
     e.message.prepend("[safely] ") if e.message && Safely.tag
-    Errbase.report(e)
+    Errbase.report(e, options)
   end
 
   self.tag = true
